@@ -91,12 +91,11 @@ def descargacam():
             ret = descarga(url, fn, isbinary=True)
             time.sleep(1)
 
-            while not ret:
-                for caso in paths_posibles:
-                    url= url.replace(caso[0], caso[1] )
-                    ret = descarga(url, fn, isbinary=True)
-                    time.sleep(1)
-                    if ret: break
+            for caso in paths_posibles:
+               url= url.replace(caso[0], caso[1] )
+               ret = descarga(url, fn, isbinary=True)
+               time.sleep(1)
+               if ret: break
 
 
         if ret:
