@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Requiere las bibliotecas Python: requests, pdfminer.six, pandas; Módulo: descargabib.py  # noqa: E501
+"""Requiere las bibliotecas Python: requests, pymupdf, pandas; Módulo: descargabib.py  # noqa: E501
 
 Informes de:
 
@@ -15,12 +15,12 @@ import time
 from glob import glob
 import re
 import pandas as pd
+from numpy import nan as np_nan
 
 from os import  chdir as os_chdir, path as os_path
 from glob import glob
-from  numpy import r_ as np_r
 import pandas as pd
-import fitz
+import fitz                       # librería pymupdf
 from  sys import argv as sys_argv
 
 from io import StringIO
@@ -30,7 +30,7 @@ from pathlib import Path
 from descargabib import descarga
 
 
-os_chdir(str(Path(__file__).parent))
+#os_chdir(str(Path(__file__).parent))
 
 pdfdir  = 'data/'
 datadir = ''
@@ -52,7 +52,8 @@ FN_TPL = '{:02d}{:02d}{:02d}_cam_covid19.pdf'
 def descargacam():
     today = dt.date.today()
 
-    current = dt.date(2021, 6, 29) # Los días previos están incluídos en el fichero del repositorio "madrid-series-2021-04-30.csv"
+    # Los días previos están incluídos en el fichero del repositorio "madrid-series-2021-04-30.csv"
+    current = dt.date(2021, 6, 29) 
 
     try:
        Path(pdfdir).mkdir(parents=True, exist_ok=True)
@@ -93,11 +94,11 @@ def descargacam():
             for path_alternativo in paths_posibles: # Vamos probando combinaciones distintas de path y nombre
                 if ret: break
                 for nombre_alternativo in nombres_posibles:
-                   url_caso= url.replace(path_alternativo[0], path_alternativo[1] )
-                   url_caso= url_caso.replace(nombre_alternativo[0], nombre_alternativo[1] )
-                   ret = descarga(url_caso, fn, isbinary=True)
-                   time.sleep(1)
-                   if ret: break
+                    url_caso= url.replace(path_alternativo[0], path_alternativo[1] )
+                    url_caso= url_caso.replace(nombre_alternativo[0], nombre_alternativo[1] )
+                    ret = descarga(url_caso, fn, isbinary=True)
+                    time.sleep(1)
+                    if ret: break
 
 
         if ret:
@@ -105,10 +106,10 @@ def descargacam():
 
         current += dt.timedelta(1)
 
-
 #############
 # Creamos el csv con los datos PCR actuales.
-# Se recrea la tabla completa cada día.
+# Recrea la tabla completa cada día.
+
 
 def tabla_PCR_actual(pdf ):
     lista = []
@@ -119,14 +120,17 @@ def tabla_PCR_actual(pdf ):
         df = pd.DataFrame.from_dict(  doc.get_page_text(pno=pagina, option='blocks'))
         df2 = df[4].str.split(' \n', expand=True)   
 
-        #print (pagina, df2.shape, df2.shape[1])# 
-        columnas = df2.shape[1]
+        df2=df2.iloc[19:].replace('',np_nan).dropna(axis=1, how='all').dropna(axis=0, how='any')
 
+        columnas = df2.shape[1]
+        print(columnas)
+        
         # Tenemos 3 columnas de datos en el PDF con 3 campos cada columna.
         # Los partimos y concatenamos
         lista.append(df2.iloc[:,0:3].set_axis(['Fecha_Notif', 'diario', 'PCR+'], axis=1))
-        if columnas > 6 : lista.append(df2.iloc[:,4:7].set_axis(['Fecha_Notif', 'diario', 'PCR+'], axis=1))
-        if columnas > 9 : lista.append(df2.iloc[:,8:11].set_axis(['Fecha_Notif', 'diario', 'PCR+'], axis=1))
+        if columnas > 3 : lista.append(df2.iloc[:,3:6].set_axis(['Fecha_Notif', 'diario', 'PCR+'], axis=1))
+        if columnas > 6 and columnas < 10 : lista.append(df2.iloc[:,6:].set_axis(['Fecha_Notif', 'diario', 'PCR+'], axis=1))
+            
 
     df_temp=pd.concat(lista, ignore_index=True)
 
@@ -134,12 +138,11 @@ def tabla_PCR_actual(pdf ):
     
     df_limpio.insert(loc=0, column='Fecha', value=pd.to_datetime(df_limpio['Fecha_Notif'], dayfirst=True).astype('str'))
     
-    df_limpio = df_limpio.drop(columns=['Fecha_Notif','diario'])# drop colums no usadas
+    df_limpio = df_limpio.drop(columns=['Fecha_Notif','diario'])# drop columnas no usadas
 
     df_limpio=df_limpio.sort_values(by='Fecha', ascending=True) # 
 
     df_limpio.to_csv('madrid-pcr.csv', index=False, encoding='utf-8' ) 
-
 
 def datos_resumen(fecha):
     """
@@ -201,7 +204,6 @@ def datos_resumen(fecha):
 
     df.to_csv('madrid-series.csv', index=False, mode='a', header=False, encoding='utf-8')
 
-
 ############################
 # PROCESO PRINCIPAL
 #
@@ -218,6 +220,7 @@ if __name__ == '__main__':
     ultimo_doc_dt=dt.datetime.strptime(ultimo_doc[5:11],"%y%m%d").date()
 
     # El fichero madrid-pcr.csv se crea con los datos consolidados del último pdf publicado
+
     tabla_PCR_actual(ultimo_doc)
 
     # El fichero madrid-series.csv se crea con los datos resumen publicados cada día.
@@ -250,9 +253,3 @@ if __name__ == '__main__':
     while fecha_actual < fecha_hoy:
         fecha_actual +=dt.timedelta(days=1)
         datos_resumen(fecha_actual)
-    
-
-    
-
-
-    
