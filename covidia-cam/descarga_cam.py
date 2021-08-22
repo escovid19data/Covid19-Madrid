@@ -133,7 +133,15 @@ def tabla_PCR_actual(pdf ):
             
 
     df_temp=pd.concat(lista, ignore_index=True)
+    
+    #### Añadido: 2021-08-22, porque había fechas que tenían un espacio en blanco.
+    # Por eso, esos días no podían ser convertidos más tarde en fecha, y no aparecían.
+    
+    df_temp['Fecha_Notif'] = df_temp['Fecha_Notif'].str.strip()
+    
+    ####  Fin del añadido
 
+    
     df_limpio = df_temp.loc[(df_temp['Fecha_Notif'].str.len()== 10) & ~df_temp['PCR+'].isnull()] #
     
     df_limpio.insert(loc=0, column='Fecha', value=pd.to_datetime(df_limpio['Fecha_Notif'], dayfirst=True).astype('str'))
@@ -183,23 +191,23 @@ def datos_resumen(fecha):
 
 
     df = pd.DataFrame(data={
-                 'Fecha': fecha_str,
-                 'CASOS_PCR': lista_valores[17],
-                 'Hospitalizados': lista_valores[1],
-                 'UCI': lista_valores[3],
-                 'Fallecidos': lista_valores[9],
-                 'Recuperados': lista_valores[7],
-                 'domicilio': lista_valores[5],
-                 'uci_dia': lista_valores[2],
-                 'hospitalizados_dia':lista_valores[0]+lista_valores[2],
-                 'domicilio_dia': lista_valores[4],
-                 'altas_dia': lista_valores[6],
-                 'fallecidos_dia': lista_valores[8],
-                 'muertos_hospitales': lista_valores[11],
-                 'muertos_domicilios': lista_valores[12],
-                 'muertos_centros': lista_valores[10],
-                 'muertos_otros': lista_valores[13],
-                 'muertos': lista_valores[14]}, index=[0] )
+                  'Fecha': fecha_str,
+                  'CASOS_PCR': lista_valores[17],
+                  'Hospitalizados': lista_valores[1],
+                  'UCI': lista_valores[3],
+                  'Fallecidos': lista_valores[9],
+                  'Recuperados': lista_valores[7],
+                  'domicilio': lista_valores[5],
+                  'uci_dia': lista_valores[2],
+                  'hospitalizados_dia':lista_valores[0]+lista_valores[2],
+                  'domicilio_dia': lista_valores[4],
+                  'altas_dia': lista_valores[6],
+                  'fallecidos_dia': lista_valores[8],
+                  'muertos_hospitales': lista_valores[11],
+                  'muertos_domicilios': lista_valores[12],
+                  'muertos_centros': lista_valores[10],
+                  'muertos_otros': lista_valores[13],
+                  'muertos': lista_valores[14]}, index=[0] )
 
 
     df.to_csv('madrid-series.csv', index=False, mode='a', header=False, encoding='utf-8')
