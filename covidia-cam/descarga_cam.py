@@ -81,7 +81,8 @@ def descargacam():
         paths_posibles=[('NoExiste',''), # Necesario para hacer cambio de nombres posibles para cada path posible
                         ('doc','aud'),
                         ('doc/sanidad', 'aud/empleo'),
-                        ('doc/sanidad', 'doc/sanidad/rrhh')]
+                        ('doc/sanidad', 'doc/sanidad/rrhh'),
+                        ('doc/sanidad', 'doc/sanidad/prev')]
 
         nombres_posibles=[('SinValor',''), # Necesario para probar cada path con el nombre básico 
                           ('covid19','covid-19'),
