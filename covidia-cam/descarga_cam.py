@@ -86,7 +86,8 @@ def descargacam():
 
         nombres_posibles=[('SinValor',''), # Necesario para probar cada path con el nombre básico 
                           ('covid19','covid-19'),
-                          ('cam_covid19', 'cam_covid')]
+                          ('cam_covid19', 'cam_covid'),
+                          ('cam_covid19', 'cam_covid19.pdf')]
 
         ret = False
 
@@ -121,7 +122,7 @@ def tabla_PCR_actual(pdf ):
         df = pd.DataFrame.from_dict(  doc.get_page_text(pno=pagina, option='blocks'))
         df2 = df[4].str.split(' \n', expand=True)   
 
-        df2=df2.iloc[19:].replace('',np_nan).dropna(axis=1, how='all').dropna(axis=0, how='any')
+        df2=df2.iloc[19:].dropna(how='all', axis=1).dropna(axis=0, how='any').replace('',np_nan).dropna(axis=1, how='all').dropna(axis=0, how='any')
 
         columnas = df2.shape[1]
         print(columnas)
