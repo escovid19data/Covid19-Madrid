@@ -122,7 +122,7 @@ def tabla_PCR_actual(pdf ):
         df = pd.DataFrame.from_dict(  doc.get_page_text(pno=pagina, option='blocks'))
         df2 = df[4].str.split(' \n', expand=True)   
 
-        df2=df2.iloc[19:].dropna(how='all', axis=1).dropna(axis=0, how='any').replace('',np_nan).dropna(axis=1, how='all').dropna(axis=0, how='any')
+        df2=df2.replace(' ',np_nan).replace('',np_nan).dropna(axis=1, how='all').dropna(axis=0, how='all')
 
         columnas = df2.shape[1]
         print(columnas)
@@ -160,14 +160,16 @@ def datos_resumen(fecha):
     """
 
     pdf=f"{pdfdir}{dt.datetime.strftime(fecha,'%y%m%d')}_cam_covid19.pdf"
-
+    
+    print(f" Para  los datos de resumen vamos a usar el fichero: {pdf}")
+    
     try :
         doc=fitz.open(pdf)
 
     except :
         return
 
-    print(pdf)
+    
 
     fecha_str=f"20{pdf[-22:-20]}-{pdf[-20:-18]}-{pdf[-18:-16]}"
 
@@ -219,7 +221,7 @@ def datos_resumen(fecha):
 #
 if __name__ == '__main__':
 
-    descargacam()
+    ###########descargacam()
 
     # Después de descargar los ficheros.
     # Ejecución para crear el fichero de PCRs, 
@@ -231,6 +233,7 @@ if __name__ == '__main__':
 
     # El fichero madrid-pcr.csv se crea con los datos consolidados del último pdf publicado
 
+    print(f"Vamos a usar para la tabla PCR: {ultimo_doc}")
     tabla_PCR_actual(ultimo_doc)
 
     # El fichero madrid-series.csv se crea con los datos resumen publicados cada día.
