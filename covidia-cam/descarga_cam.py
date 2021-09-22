@@ -221,7 +221,7 @@ def datos_resumen(fecha):
 #
 if __name__ == '__main__':
 
-    ###########descargacam()
+    descargacam()
 
     # Después de descargar los ficheros.
     # Ejecución para crear el fichero de PCRs, 
