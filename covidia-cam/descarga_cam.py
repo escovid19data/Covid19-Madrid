@@ -76,13 +76,17 @@ def descargacam():
             continue
 
         fn = pdfdir + FN_TPL.format(current.year % 100, current.month, current.day) 
-        url = URL_TPL.format(current.year % 100, current.month, current.day)
+        url1 = URL_TPL.format(current.year % 100, current.month, current.day)
+        url2 = URL_TPL.format(current.day, current.month, current.year )
+
+        urls=[url1, url2] # Para distintos formatos de fecha
 
         paths_posibles=[('NoExiste',''), # Necesario para hacer cambio de nombres posibles para cada path posible
                         ('doc','aud'),
                         ('doc/sanidad', 'aud/empleo'),
                         ('doc/sanidad', 'doc/sanidad/rrhh'),
-                        ('doc/sanidad', 'doc/sanidad/prev')]
+                        ('doc/sanidad', 'doc/sanidad/prev'),
+                        ('doc/sanidad', 'doc/presidencia')]
 
         nombres_posibles=[('SinValor',''), # Necesario para probar cada path con el nombre básico 
                           ('covid19','covid-19'),
@@ -93,14 +97,15 @@ def descargacam():
 
         if not os_pth.exists(fn): # Hay que descargar el fichero
 
-            for path_alternativo in paths_posibles: # Vamos probando combinaciones distintas de path y nombre
-                if ret: break
-                for nombre_alternativo in nombres_posibles:
-                    url_caso= url.replace(path_alternativo[0], path_alternativo[1] )
-                    url_caso= url_caso.replace(nombre_alternativo[0], nombre_alternativo[1] )
-                    ret = descarga(url_caso, fn, isbinary=True)
-                    time.sleep(1)
+            for url in urls:
+                for path_alternativo in paths_posibles: # Vamos probando combinaciones distintas de path y nombre
                     if ret: break
+                    for nombre_alternativo in nombres_posibles:
+                        url_caso= url.replace(path_alternativo[0], path_alternativo[1] )
+                        url_caso= url_caso.replace(nombre_alternativo[0], nombre_alternativo[1] )
+                        ret = descarga(url_caso, fn, isbinary=True)
+                        time.sleep(1)
+                        if ret: break
 
 
         if ret:
