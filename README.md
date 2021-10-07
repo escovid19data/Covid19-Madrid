@@ -5,4 +5,4 @@ Repositorio para almacenar los datos diarios sobre Covid-19 ofrecidos por la Com
 Creado y mantenido por [@alfonsotwr](https://twitter.com/alfonsotwr) hasta abril de 2021.
 Mantenido por [@otro_mas1](https://twitter.com/otro_mas1) desde abril de 2021.
 
-Trasladado (como fork) aquí el 13-08-2021 desde https://twitter.com/alfonsotwr, y actualizado a partir de entonces.
+Trasladado (como fork) aquí el 13-08-2021 desde https://github.com/alfonsotwr/snippets, y actualizado a partir de entonces.
