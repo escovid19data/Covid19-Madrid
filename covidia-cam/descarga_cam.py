@@ -71,7 +71,8 @@ def descargacam():
 
         # Días sin informe
         if current in [dt.date(2021, 1, 6),
-                       dt.date(2021, 5, 8)]:
+                       dt.date(2021, 5, 8),
+                       dt.date(2021, 10, 12)]:
             current += dt.timedelta(1)
             continue
 
