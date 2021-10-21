@@ -93,6 +93,7 @@ def descargacam():
                           ('covid19','covid-19'),
                           ('cam_covid19', 'cam_covid'),
                           ('cam_covid19', 'cam_covi19'),
+                          ('cam_covid19', 'cam_covid19_0'),
                           ('cam_covid19', 'cam_covid19.pdf')]
 
         ret = False
