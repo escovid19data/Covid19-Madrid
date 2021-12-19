@@ -129,7 +129,7 @@ def tabla_PCR_actual(pdf ):
     
     doc=fitz.open(pdf)
 
-    for pagina in range(2,7):  # Páginas del pdf con tablas de datos PCR
+    for pagina in range(2,8):  # Páginas del pdf con tablas de datos PCR
         df = pd.DataFrame.from_dict(  doc.get_page_text(pno=pagina, option='blocks'))
         df2 = df[4].str.split(' \n', expand=True)   
 
@@ -158,6 +158,8 @@ def tabla_PCR_actual(pdf ):
     df_limpio = df_temp.loc[(df_temp['Fecha_Notif'].str.len()== 10) & ~df_temp['PCR+'].isnull()] #
     
     df_limpio.insert(loc=0, column='Fecha', value=pd.to_datetime(df_limpio['Fecha_Notif'], dayfirst=True).astype('str'))
+
+    df_limpio.to_csv('madrid-pcr-completo.csv', index=False, encoding='utf-8' ) 
     
     df_limpio = df_limpio.drop(columns=['Fecha_Notif','diario'])# drop columnas no usadas
 
