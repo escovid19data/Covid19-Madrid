@@ -82,8 +82,9 @@ def descargacam():
         url1 = URL_TPL.format(current.year % 100, current.month, current.day)
         url2 = URL_TPL.format(current.day, current.month, current.year )
         url3 = URL_TPL.format(current.year, current.month, current.day )
+        url4 = URL_TPL.format(current.day, current.month, current.year % 100 )
 
-        urls=[url1, url2, url3] # Para distintos formatos de fecha
+        urls=[url1, url3, url2, url4] # Para distintos formatos de fecha
 
         paths_posibles=[('NoExiste',''), # Necesario para hacer cambio de nombres posibles para cada path posible
                         ('doc','aud'),
