@@ -161,16 +161,13 @@ def tabla_PCR_actual(pdf ):
     
     df_limpio.insert(loc=0, column='Fecha', value=pd.to_datetime(df_limpio['Fecha_Notif'], dayfirst=True).astype('str'))
 
-    df_limpio = df_limpio.drop(columns=['Fecha_Notif'])# drop columnas no usadas
+    df_limpio.to_csv('madrid-pcr-completo.csv', index=False, encoding='utf-8' ) 
+    
+    df_limpio = df_limpio.drop(columns=['Fecha_Notif','diario'])# drop columnas no usadas
 
     df_limpio=df_limpio.sort_values(by='Fecha', ascending=True) # 
 
-    df_limpio.to_csv('madrid-pcr-completo.csv', index=False, encoding='utf-8' ) 
-    
-    df_limpio = df_limpio.drop(columns=['diario'])# drop columnas no usadas
-
     df_limpio.to_csv('madrid-pcr.csv', index=False, encoding='utf-8' ) 
-
 
 def datos_resumen(fecha):
     """
