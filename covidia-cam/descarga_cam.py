@@ -76,6 +76,7 @@ def descargacam():
                        dt.date(2021, 12, 6),
                        dt.date(2021, 12, 8),
                        dt.date(2021, 12, 25),
+                       dt.date(2022, 1, 6),
                        dt.date(2022, 1, 1)]:
             current += dt.timedelta(1)
             continue
