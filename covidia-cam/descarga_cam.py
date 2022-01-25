@@ -17,13 +17,7 @@ import re
 import pandas as pd
 from numpy import nan as np_nan
 
-from os import  chdir as os_chdir, path as os_path
-from glob import glob
-import pandas as pd
 import fitz                       # librería pymupdf
-from  sys import argv as sys_argv
-
-from io import StringIO
 
 from pathlib import Path
 
@@ -35,13 +29,6 @@ from descargabib import descarga
 pdfdir  = 'data/'
 datadir = ''
 
-expnumber = re.compile(r'^ *(\d+(?: ?\. ?\d+)*)(?:[^\d/]|\s|\(|$|\.[^\d/]|\.\s|\.$)', re.M)  # noqa: E501
-
-expfecha = re.compile(r'(\d\d)/(\d\d)/(\d\d\d\d)')
-expacum = re.compile(r'\n(1|2) \n(5|6|7|8) \n(9|10|11|12|13) \n[\d \n]+(/)?')
-expnumber2 = re.compile(r'\d\d\d\d\d+')
-
-exppoint = re.compile(r'(?<=\d)\.(?=\d)')
 
 
 URL_TPL = 'https://www.comunidad.madrid/sites/default/files/doc/sanidad/{:02d}{:02d}{:02d}_cam_covid19.pdf'  # noqa: E501
@@ -128,6 +115,10 @@ def descargacam():
 # Recrea la tabla completa cada día.
 
 
+pd.options.display.max_columns=200
+pd.options.display.max_colwidth=200
+pd.options.display.width=1200
+
 def tabla_PCR_actual(pdf ):
     lista = []
     
@@ -135,8 +126,8 @@ def tabla_PCR_actual(pdf ):
 
     for pagina in range(2,8):  # Páginas del pdf con tablas de datos PCR
         df = pd.DataFrame.from_dict(  doc.get_page_text(pno=pagina, option='blocks'))
-        df2 = df[4].str.split(' \n', expand=True)   
-
+        df2 = df[4].str.split('\s+(\\n)*', expand=True, )
+        df2 = df2.iloc[5:,:].dropna(how='all',axis=1)
         df2=df2.replace(' ',np_nan).replace('',np_nan).dropna(axis=1, how='all').dropna(axis=0, how='all')
 
         columnas = df2.shape[1]
